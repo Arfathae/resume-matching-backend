@@ -29,7 +29,7 @@ COPY . .
 # Cloud Run will send $PORT; expose for documentation
 EXPOSE 8080
 
-# Use gunicorn with uvicorn workers; bind to $PORT
-CMD ["gunicorn", "--workers", "2", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:${PORT}", "app:app"]
+# Use gunicorn with uvicorn workers; bind to $PORT (env expansion requires shell form)
+CMD exec gunicorn app:app --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
 
 
