@@ -27,6 +27,11 @@ index.add(np.array(embeddings).astype(np.float32))
 class Query(BaseModel):
     text: str
 
+# Root route for basic availability checks
+@app.get("/")
+def root():
+    return {"message": "Backend is running ✅"}
+
 # Health check (to see if backend runs)
 @app.get("/health")
 def health():
