@@ -28,12 +28,8 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . .
 
-# Pre-download model weights to speed up cold starts
-RUN python - <<'PY'
-from sentence_transformers import SentenceTransformer
-SentenceTransformer("Arfathkael/fine-tuned-mpnet-triplet")
-print("Model cached.")
-PY
+# Pre-download model weights to speed up cold starts (avoid heredoc for wider Docker compatibility)
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('Arfathkael/fine-tuned-mpnet-triplet'); print('Model cached.')"
 
 # Cloud Run will send $PORT; expose for documentation
 EXPOSE 8080
