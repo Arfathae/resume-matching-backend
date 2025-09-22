@@ -3,7 +3,9 @@ FROM python:3.9-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    PORT=8080
+    PORT=8080 \
+    HF_HOME=/root/.cache/huggingface \
+    SENTENCE_TRANSFORMERS_HOME=/root/.cache/sentence_transformers
 
 WORKDIR /app
 
@@ -25,6 +27,13 @@ COPY requirements.txt ./
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . .
+
+# Pre-download model weights to speed up cold starts
+RUN python - <<'PY'
+from sentence_transformers import SentenceTransformer
+SentenceTransformer("Arfathkael/fine-tuned-mpnet-triplet")
+print("Model cached.")
+PY
 
 # Cloud Run will send $PORT; expose for documentation
 EXPOSE 8080
